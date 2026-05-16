@@ -14,7 +14,6 @@ class Level:
         self.tela = surface
         self.camera_x = 0
         
-        # Tenta carregar o fundo, se não achar, cria um fundo preto
         try:
             self.fundo = pygame.image.load(CAMINHO_FUNDO).convert()
             self.fundo = pygame.transform.scale(self.fundo, (LARGURA, ALTURA))
@@ -31,10 +30,19 @@ class Level:
         jogador = Player(100, 100)
         self.jogador_grupo.add(jogador)
 
+        # Adicionei várias plataformas para criar um desafio de pulo e dash no meio
         layout = [
-            Plataforma(0, 500, 1000, 40),
-            Plataforma(1100, 400, 300, 40),
-            Plataforma(1500, 500, 1500, 40)
+            # O chão inicial
+            Plataforma(0, 500, 800, 40),      
+            
+            # As plataformas flutuantes no meio (A escadinha)
+            Plataforma(850, 400, 150, 20),    # Primeiro degrau flutuante
+            Plataforma(1100, 300, 300, 40),   # A plataforma que estava isolada (agora mais alta)
+            Plataforma(1450, 200, 150, 20),   # Degrau mais alto ainda
+            Plataforma(1250, 100, 100, 20),   # Plataforma extra voltando por cima
+            
+            # O chão do outro lado
+            Plataforma(1600, 500, 1500, 40)   
         ]
         self.plataformas.add(*layout)
 
@@ -64,6 +72,7 @@ class Level:
                     jogador.rect.top = plat.rect.bottom
                     jogador.direcao.y = 0
 
+        # Morte por queda
         if jogador.rect.y > ALTURA + 200:
             jogador.rect.topleft = (100, 100)
             jogador.direcao.y = 0

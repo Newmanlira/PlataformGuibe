@@ -5,37 +5,30 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
         
-        # Carrega a spritesheet
         try:
             self.spritesheet = pygame.image.load(CAMINHO_SPRITE).convert_alpha()
         except FileNotFoundError:
-            print(f"Aviso: Não encontrou {CAMINHO_SPRITE}.")
             self.spritesheet = None
 
-        # Dicionário de animações
         self.animacoes = {'idle': [], 'correndo': []}
         self.frame_index = 0
         self.velocidade_animacao = 0.15
         
-        # Recorta os frames
         self.carregar_frames()
 
-        # Imagem inicial
         if self.animacoes['idle']:
             self.image = self.animacoes['idle'][0]
         else:
-            self.image = pygame.Surface((48, 48))
+            self.image = pygame.Surface((72, 72))
             self.image.fill((200, 200, 200))
 
         self.rect = self.image.get_rect(topleft=(x, y))
 
-        # Variáveis de Movimento Base
         self.direcao = pygame.math.Vector2(0, 0)
         self.velocidade_atual = VELOCIDADE_JOGADOR
         self.no_chao = False
         self.olhando_direita = True
 
-        # Variáveis do Dash
         self.esta_dashing = False
         self.tempo_dash = 0
         self.cooldown_dash = 0
@@ -44,17 +37,15 @@ class Player(pygame.sprite.Sprite):
         if not self.spritesheet: return
         
         TAMANHO_ORIGINAL = 24
-        ESCALA = 2 
+        ESCALA = 3 
         TAMANHO_FINAL = TAMANHO_ORIGINAL * ESCALA
 
-        # Linha 0: Parado (Idle) - 4 frames
         for coluna in range(4): 
             frame = pygame.Surface((TAMANHO_ORIGINAL, TAMANHO_ORIGINAL), pygame.SRCALPHA)
             frame.blit(self.spritesheet, (0, 0), (coluna * TAMANHO_ORIGINAL, 0 * TAMANHO_ORIGINAL, TAMANHO_ORIGINAL, TAMANHO_ORIGINAL))
             frame = pygame.transform.scale(frame, (TAMANHO_FINAL, TAMANHO_FINAL))
             self.animacoes['idle'].append(frame)
 
-        # Linha 1: Correndo - 6 frames
         for coluna in range(6): 
             frame = pygame.Surface((TAMANHO_ORIGINAL, TAMANHO_ORIGINAL), pygame.SRCALPHA)
             frame.blit(self.spritesheet, (0, 0), (coluna * TAMANHO_ORIGINAL, 1 * TAMANHO_ORIGINAL, TAMANHO_ORIGINAL, TAMANHO_ORIGINAL))
@@ -77,11 +68,9 @@ class Player(pygame.sprite.Sprite):
             else:
                 self.direcao.x = 0
 
-            # Pulo
             if teclas[pygame.K_SPACE] and self.no_chao:
                 self.pular()
 
-            # Dash no SHIFT esquerdo
             if teclas[pygame.K_LSHIFT] and self.cooldown_dash <= 0:
                 self.iniciar_dash()
 
@@ -112,7 +101,6 @@ class Player(pygame.sprite.Sprite):
     def animar(self):
         if not self.animacoes['idle']: return
 
-        # Se estiver dando dash, usa a animação de corrida mais rápida
         if self.esta_dashing:
             estado = 'correndo'
             self.velocidade_animacao = 0.4

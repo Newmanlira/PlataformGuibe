@@ -4,7 +4,6 @@ import os
 
 pygame.init()
 
-# Carrega a imagem
 diretorio_atual = os.path.dirname(__file__)
 caminho_imagem = os.path.join(diretorio_atual, "AnimationSheet.png")
 
@@ -18,7 +17,6 @@ largura_img, altura_img = imagem.get_size()
 tela = pygame.display.set_mode((max(largura_img, 500), max(altura_img + 60, 300)))
 pygame.display.set_caption("Descobridor de Frames")
 
-# Tamanho inicial do chute (geralmente é 32, 48 ou 64)
 tamanho_frame = 32 
 fonte = pygame.font.SysFont(None, 24)
 
@@ -28,7 +26,6 @@ while rodando:
         if evento.type == pygame.QUIT:
             rodando = False
         
-        # Usa as setas para aumentar ou diminuir a grade
         if evento.type == pygame.KEYDOWN:
             if evento.key == pygame.K_UP:
                 tamanho_frame += 2
@@ -39,23 +36,19 @@ while rodando:
             if evento.key == pygame.K_LEFT:
                 tamanho_frame -= 10
                 
-            # Impede que o tamanho seja menor que 8
             if tamanho_frame < 8: 
                 tamanho_frame = 8
 
     tela.fill((40, 40, 40))
     
-    # Desenha a imagem um pouco mais para baixo para dar espaço ao texto
     deslocamento_y = 50
     tela.blit(imagem, (0, deslocamento_y))
 
-    # Desenha a grade vermelha por cima
     for x in range(0, largura_img + 1, tamanho_frame):
         pygame.draw.line(tela, (255, 0, 0), (x, deslocamento_y), (x, deslocamento_y + altura_img), 1)
     for y in range(0, altura_img + 1, tamanho_frame):
         pygame.draw.line(tela, (255, 0, 0), (0, deslocamento_y + y), (largura_img, deslocamento_y + y), 1)
 
-    # Texto de instrução
     texto1 = fonte.render(f"Tamanho Atual do Frame: {tamanho_frame}x{tamanho_frame} pixels", True, (255, 255, 255))
     texto2 = fonte.render("Use as SETAS do teclado para aumentar/diminuir o quadrado vermelho", True, (200, 200, 200))
     tela.blit(texto1, (10, 10))
